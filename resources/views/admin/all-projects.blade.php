@@ -18,7 +18,14 @@
 	<div class="row clients-contacts-main">
 		<div class="col-md-12 col-xl-12">
 			@if($errors->any())
-                @if($errors->first() == 'property_updated')
+                @if($errors->first() == 'project_created')
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+						<i class="fa fa-check-circle-o me-2" aria-hidden="true"></i> <strong>Success!</strong> Project created successfully.
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+				@elseif($errors->first() == 'project_updated')
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
 						<i class="fa fa-check-circle-o me-2" aria-hidden="true"></i> <strong>Success!</strong> Project updated successfully.
 						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -74,34 +81,32 @@
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($properties as $property)
+									@foreach ($projects as $project)
 										<tr>
 											<td>
-												@if ($property->pictures == "" || $property->pictures == NULL)
+												@if ($project->pictures == "" || $project->pictures == NULL)
 													<img src="/admin/assets/images/properties/none.jpg" alt="" class="cart-img">
 												@else
 													<img src="/admin/assets/images/pngs/1.png" alt="" class="cart-img">
 												@endif
 												
 											</td>
-											<td>{{ $property->name }}</td>
-											<td>{{ $property->city }}</td>
+											<td>{{ $project->name }}</td>
+											<td>
+												{{ $project['property'][0]->name }}
+											</td>
 											<td >
-												@if ($property->property_status == "negotiating_purchase")
-													<span class="badge bg-info">Negotiating Purchase</span>
-												@elseif($property->property_status == "planning_renovation")
-													<span class="badge bg-info">Planning Renovation</span>
-												@elseif($property->property_status == "renovation_in_process")
-													<span class="badge bg-info">Renovation In Process</span>
-												@elseif($property->property_status == "renovation_completed")
-													<span class="badge bg-info">Renovation Completed</span>
-												@elseif($property->property_status == "sold")
-													<span class="badge bg-danger">Sold</span>
+												@if ($project->project_status == "planning")
+													<span class="badge bg-info">Planning</span>
+												@elseif($project->project_status == "in_process")
+													<span class="badge bg-warning">In Process</span>
+												@elseif($project->project_status == "completed")
+													<span class="badge bg-primary">Completed</span>
 												@endif
 											</td>
 											<td>
-												<a href="/admin/property/{{ $property->slug }}/details" class="btn btn-primary-light btn-square br-50 m-1"><i class="fe fe-eye fs-13"></i></a>
-												<a href="/admin/property/{{ $property->slug }}/edit" class="btn btn-info-light btn-square br-50 m-1"><i class="fa fa-pencil fs-13"></i></a>
+												<a href="/admin/project/{{ $project->slug }}/details" class="btn btn-primary-light btn-square br-50 m-1"><i class="fe fe-eye fs-13"></i></a>
+												<a href="/admin/project/{{ $project->slug }}/edit" class="btn btn-info-light btn-square br-50 m-1"><i class="fa fa-pencil fs-13"></i></a>
 											</td>
 										</tr>
 									@endforeach
@@ -124,38 +129,6 @@
 				</div>
 			</div>
 		</div>
-		{{-- @foreach ($investors as $investor)
-			<div class="col-lg-4 col-md-4 col-xl-4 col-sm-12">
-				<div class="card mb-5">
-					<div class="card-body">
-						<div class="client-title mt-0">
-							<figure class="rounded-circle align-self-start mb-0">
-								@if ($investor->profile_pic == null || $investor->profile_pic == "")
-									<img src="admin/assets/images/users/investor.png" alt="Generic placeholder image" class="avatar brround avatar-lg me-3">
-								@else
-									<img src="admin/assets/images/users/16.jpg" alt="Generic placeholder image" class="avatar brround avatar-lg me-3">
-								@endif
-							</figure>
-							<div class="media-body">
-								<h4 class="time-title p-0 mb-0 font-weight-semibold leading-normal"><a href="javascript:void(0)" class="text-dark">{{ $investor->first_name }}<br>{{ $investor->last_name }}</a></h4>
-								<span class="text-muted">{{ $investor->city }}, {{ $investor->state }}</span>
-							</div>
-							<a href="/admin/investors/{{ $investor->id }}/details">
-								<button class="btn btn-primary d-none d-sm-block me-2"><i class="fa fa-eye"></i> </button>
-							</a>
-							<a href="/admin/investors/{{ $investor->id }}/edit">
-								<button class="btn btn-info d-none d-sm-block"><i class="fa fa-pencil"></i> </button>
-							</a>
-						</div>
-						<div class="d-flex align-items-center justify-content-center mt-4">
-							<div class="pe-4 border-end d-flex align-items-center justify-content-center">
-								<h5 class="mb-0 me-3 text-muted">{{ $investor->username }}</h5>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		@endforeach --}}
 	</div>
 </div>
 @endsection

@@ -56,6 +56,11 @@ Route::POST('/admin/active-gallery', [AdminsController::class,'active_renovation
 
 Route::GET('/admin/projects', [ProjectsController::class,'all_projects']);
 Route::GET('/admin/project/{slug}/details', [ProjectsController::class,'project_details']);
-
 Route::GET('/admin/add-project', [ProjectsController::class,'add_project_view']);
 Route::POST('/admin/add-project',[ProjectsController::class,'add_project'])->name('add.project');
+// Route::GET('/admin/project/{id}/update/pictures', [PropertyController::class,'update_property_images']);
+
+Route::GET('/admin/project/{slug}/edit', [ProjectsController::class,'edit_project_view']);
+Route::POST('/admin/update-project', [ProjectsController::class,'update_project'])->name('update.project');
+Route::POST('/admin/archive-project', [ProjectsController::class,'ban_project'])->name('ban.project');
+Route::POST('/admin/active-project', [ProjectsController::class,'ban_project'])->name('ban.project');

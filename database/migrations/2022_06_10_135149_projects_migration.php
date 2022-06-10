@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->integer('property_id');
             $table->string('project_status');
-            $table->json('image_title');
-            $table->json('image');
+            $table->json('image_title')->nullable();
+            $table->json('image')->nullable();
             $table->string('slug');
             $table->string('url')->nullable();
             $table->integer('status')->default(1);
