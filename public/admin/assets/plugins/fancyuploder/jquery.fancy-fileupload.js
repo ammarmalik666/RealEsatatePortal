@@ -10,7 +10,7 @@
 			'"': '&quot;',
 			"'": '&#039;'
 		};
-
+		console.log(text);
 		return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 	}
 

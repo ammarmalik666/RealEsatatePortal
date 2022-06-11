@@ -3,6 +3,7 @@
     
 @endsection
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="main-container container-fluid">
 	<div class="page-header">
 		<div>
@@ -46,21 +47,48 @@
 					<h4 class="card-title">{{ $property[0]->name }}</h4>
 				</div>
 				<div class="card-body">
-					<form action="" method="POST">
-						@csrf
-						<div class="row">
-							<div class="col-md-12">
-								<div class="form-group">
-									<label>Upload Images</label>
-									<div>
-										<input id="demo" type="file" name="files" accept=" image/jpeg, image/png, text/html, application/zip, text/css, text/js" multiple />
-									</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>Upload Images</label>
+								<div>
+									<input id="demo" type="file" name="files" accept=" image/jpeg, image/png, text/html" multiple />
+									<input type="hidden" id="property_id" value="{{$property[0]->id}}">
 								</div>
 							</div>
-							
 						</div>
-						<button type="submit" class="btn btn-primary mt-3">Update Pictures</button>
-					</form>
+						
+					</div>
+					
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Files</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@if($property[0]->pictures != null)
+							@foreach($property[0]->pictures as $obj)
+							<tr>
+								<td>
+									<img src="uploads/properties/{{$obj}}" width="100">
+								</td>
+								<td>
+									<form action="{{route('property.deletePicture')}}" method="post">
+										@csrf
+										<input type="hidden" name="id" value="{{$property[0]->id}}" />
+										<input type="hidden" name="file" value="{{$obj}}" />
+										<button type="submit">
+											<i class="fa fa-trash fa-lg"></i>
+										</button>
+									</form>
+								</td>
+							</tr>
+							@endforeach
+							@endif
+						</tbody>
+					</table>	
 				</div>
 			</div>
 		</div>
@@ -77,5 +105,20 @@
 <script src="/admin/assets/plugins/fancyuploder/jquery.fancy-fileupload.js"></script>
 <script src="/admin/assets/plugins/fancyuploder/fancy-uploader.js"></script>
 <script src="/admin/assets/js/formelementadvnced.js"></script>
-
+<script>
+	(function($) {
+		//fancyfileuplod
+		var csrf_token = $('meta[name="csrf-token"]').attr('content');
+		var id = $("input#property_id").val();
+		$('#demo').FancyFileUpload({
+			url: "{{route('property.updatePhotos')}}",
+			params : {
+				 _token: csrf_token,
+				 id: id
+			},
+			maxfilesize : 1000000,
+			edit: false
+		});
+	})(jQuery);
+</script>
 @endsection

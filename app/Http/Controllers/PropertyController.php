@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Property;
+use File;
 
 class PropertyController extends Controller
 {
@@ -17,6 +18,7 @@ class PropertyController extends Controller
     public function property_details($slug)
     {
         $property = Property::where('slug', $slug)->orderBy('id', 'DESC')->get();
+        $property[0]->pictures = json_decode($property[0]->pictures, true);
         $property_count = Property::where('slug', $slug)->orderBy('id', 'DESC')->get()->count();
         if ($property_count == 1) {
             return view('admin.property-details', compact('property'));
@@ -27,6 +29,42 @@ class PropertyController extends Controller
     public function add_property_view ()
     {
         return view('admin.add-property');
+    }
+    public function update_property_photos(Request $request)
+    {
+        $id = $request->id;
+        if(!$request->has('files'))
+        {
+            $error = [
+                "success" => false
+            ];
+            return json_encode($error);
+        }
+
+        $file = $request->file('files');
+        $ext = $file->getClientOriginalExtension();
+        $filename = uniqid(rand(999, 999999)).time().'.'.$ext;
+        $filepath = "uploads/properties/";
+
+        move_uploaded_file($file, $filepath.$filename);
+
+        $property = Property::find($id);
+        $pictures = $property->pictures;
+        if($pictures != null)
+        {
+            $pics = json_decode($pictures);
+            array_push($pics, $filename);
+        }else{
+            $pics = [];
+            array_push($pics, $filename);
+        }
+
+        $pics = json_encode($pics);
+
+        Property::where('id', $id)->update(['pictures'=>$pics]);
+
+        $arr = ["success"=>true];
+        return json_encode($arr);
     }
     public function add_property(Request $request)
     {
@@ -100,12 +138,46 @@ class PropertyController extends Controller
     public function update_property_images($slug)
     {
         $property = Property::where('slug', $slug)->orderBy('id', 'DESC')->get();
+        $property[0]->pictures = json_decode($property[0]->pictures, true);
         $property_count = Property::where('slug', $slug)->orderBy('id', 'DESC')->get()->count();
         if ($property_count == 1) {
             return view('admin.update-property-pictures', compact('property'));
         }else{
             return redirect('/admin/properties');
         }
+    }
+    public function delete_property_photos(Request $request)
+    {
+        $id = $request->id;
+        $file = $request->file;
+
+        $property = Property::find($id);
+        $pictures = $property->pictures;
+
+        $pictures = json_decode($pictures, true);
+
+        $newArray = [];
+        foreach($pictures as $obj)
+        {
+            if (strpos($obj, $file) !== false)
+            {
+                
+            }else{
+                array_push($newArray, $obj);
+            }
+        }
+
+        $newArray = json_encode($newArray);
+
+        Property::where('id', $id)->update(['pictures'=>$newArray]);
+
+        try {
+            unlink('uploads/properties/'.$file);
+        } catch (\Exception $e) {
+            return back();
+        }
+
+        return back();
     }
     public function edit_property_view ($slug)
     {

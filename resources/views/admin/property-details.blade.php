@@ -229,6 +229,15 @@
 										</div>
 									</li>
 								</ul>
+								<div class="clearfix"></div>
+								<h4 class="mb-5 mt-3">Property Pictures</h4>
+								<div class="row">
+									@foreach($property[0]->pictures as $obj)
+										<div class="col-md-3">
+											<img src="uploads/properties/{{$obj}}" class="img-fluid" />
+										</div>
+									@endforeach
+								</div>
 							</div>
 						</div>
 					</div>

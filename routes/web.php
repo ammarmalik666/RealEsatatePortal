@@ -40,6 +40,8 @@ Route::GET('/admin/property/{slug}/details', [PropertyController::class,'propert
 Route::GET('/admin/add-property', [PropertyController::class,'add_property_view']);
 Route::POST('/admin/add-property',[PropertyController::class,'add_property'])->name('add.property');
 Route::GET('/admin/property/{id}/update/pictures', [PropertyController::class,'update_property_images']);
+Route::POST('/admin/property/update/pictures', [PropertyController::class,'update_property_photos'])->name('property.updatePhotos');
+Route::POST('/admin/property/delete/pictures', [PropertyController::class,'delete_property_photos'])->name('property.deletePicture');
 
 Route::GET('/admin/property/{slug}/edit', [PropertyController::class,'edit_property_view']);
 Route::POST('/admin/update-property', [PropertyController::class,'update_property'])->name('update.property');
